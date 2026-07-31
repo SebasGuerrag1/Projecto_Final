@@ -6,10 +6,12 @@
 <div class="container py-4">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="glass-card p-4">
+            <div class="figma-card p-4 shadow-sm">
                 <div class="text-center mb-4">
-                    <i class="bi bi-person-heart text-success fs-1"></i>
-                    <h3 class="fw-bold text-white mt-2">Registro de Donante</h3>
+                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3" style="width: 60px; height: 60px; background-color: var(--primary-teal-light); color: var(--primary-teal);">
+                        <i class="bi bi-person-heart fs-2"></i>
+                    </div>
+                    <h3 class="fw-bold text-dark">Registro de Donante</h3>
                     <p class="text-muted small">Crea tu cuenta de donante y registra un método de pago preferido para apoyar causas al instante.</p>
                 </div>
 
@@ -19,16 +21,16 @@
                         <div class="alert alert-danger small mb-3">{{ form.non_field_errors.0 }}</div>
                     {% endif %}
 
-                    <h5 class="text-primary fw-semibold mb-3 border-bottom border-secondary pb-2"><i class="bi bi-person-vcard me-2"></i>Información Personal</h5>
+                    <h6 class="fw-bold mb-3 border-bottom pb-2" style="color: var(--primary-teal);"><i class="bi bi-person-vcard me-2"></i>Información Personal</h6>
                     
                     <div class="row g-3 mb-3">
                         <div class="col-md-6">
-                            <label class="form-label">{{ form.username.label }}</label>
+                            <label class="form-label text-dark fw-semibold small">{{ form.username.label }}</label>
                             {{ form.username }}
                             {% if form.username.errors %}<div class="text-danger small mt-1">{{ form.username.errors.0 }}</div>{% endif %}
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">{{ form.email.label }}</label>
+                            <label class="form-label text-dark fw-semibold small">{{ form.email.label }}</label>
                             {{ form.email }}
                             {% if form.email.errors %}<div class="text-danger small mt-1">{{ form.email.errors.0 }}</div>{% endif %}
                         </div>
@@ -36,12 +38,12 @@
 
                     <div class="row g-3 mb-3">
                         <div class="col-md-6">
-                            <label class="form-label">{{ form.nombre.label }}</label>
+                            <label class="form-label text-dark fw-semibold small">{{ form.nombre.label }}</label>
                             {{ form.nombre }}
                             {% if form.nombre.errors %}<div class="text-danger small mt-1">{{ form.nombre.errors.0 }}</div>{% endif %}
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">{{ form.apellido.label }}</label>
+                            <label class="form-label text-dark fw-semibold small">{{ form.apellido.label }}</label>
                             {{ form.apellido }}
                             {% if form.apellido.errors %}<div class="text-danger small mt-1">{{ form.apellido.errors.0 }}</div>{% endif %}
                         </div>
@@ -49,47 +51,57 @@
 
                     <div class="row g-3 mb-3">
                         <div class="col-md-6">
-                            <label class="form-label">{{ form.password.label }}</label>
-                            {{ form.password }}
+                            <label class="form-label text-dark fw-semibold small">{{ form.password.label }}</label>
+                            <div class="input-group">
+                                <input type="password" name="password" id="id_password" class="form-control" placeholder="••••••••" required>
+                                <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('id_password', this)">
+                                    <i class="bi bi-eye-fill"></i>
+                                </button>
+                            </div>
                             {% if form.password.errors %}<div class="text-danger small mt-1">{{ form.password.errors.0 }}</div>{% endif %}
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">{{ form.confirm_password.label }}</label>
-                            {{ form.confirm_password }}
+                            <label class="form-label text-dark fw-semibold small">{{ form.confirm_password.label }}</label>
+                            <div class="input-group">
+                                <input type="password" name="confirm_password" id="id_confirm_password" class="form-control" placeholder="••••••••" required>
+                                <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('id_confirm_password', this)">
+                                    <i class="bi bi-eye-fill"></i>
+                                </button>
+                            </div>
                             {% if form.confirm_password.errors %}<div class="text-danger small mt-1">{{ form.confirm_password.errors.0 }}</div>{% endif %}
                         </div>
                     </div>
 
                     <div class="row g-3 mb-4">
                         <div class="col-md-6">
-                            <label class="form-label">{{ form.telefono.label }}</label>
+                            <label class="form-label text-dark fw-semibold small">{{ form.telefono.label }}</label>
                             {{ form.telefono }}
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">{{ form.direccion.label }}</label>
+                            <label class="form-label text-dark fw-semibold small">{{ form.direccion.label }}</label>
                             {{ form.direccion }}
                         </div>
                     </div>
 
-                    <h5 class="text-success fw-semibold mb-3 border-bottom border-secondary pb-2"><i class="bi bi-credit-card me-2"></i>Método de Pago Preferido (Opcional)</h5>
+                    <h6 class="fw-bold mb-3 border-bottom pb-2" style="color: var(--primary-teal);"><i class="bi bi-credit-card me-2"></i>Método de Pago Preferido (Opcional)</h6>
 
                     <div class="row g-3 mb-4">
                         <div class="col-md-4">
-                            <label class="form-label">{{ form.tipo_tarjeta.label }}</label>
+                            <label class="form-label text-dark fw-semibold small">{{ form.tipo_tarjeta.label }}</label>
                             {{ form.tipo_tarjeta }}
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label">{{ form.titular_tarjeta.label }}</label>
+                            <label class="form-label text-dark fw-semibold small">{{ form.titular_tarjeta.label }}</label>
                             {{ form.titular_tarjeta }}
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label">{{ form.numero_tarjeta.label }}</label>
+                            <label class="form-label text-dark fw-semibold small">{{ form.numero_tarjeta.label }}</label>
                             {{ form.numero_tarjeta }}
                         </div>
                     </div>
 
                     <div class="d-grid mt-4">
-                        <button type="submit" class="btn btn-accent btn-lg">
+                        <button type="submit" class="btn btn-teal btn-lg fw-bold">
                             <i class="bi bi-check-circle-fill me-2"></i>Completar Registro
                         </button>
                     </div>
@@ -98,4 +110,20 @@
         </div>
     </div>
 </div>
+
+<script>
+function togglePassword(inputId, btn) {
+    const input = document.getElementById(inputId);
+    const icon = btn.querySelector('i');
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('bi-eye-fill');
+        icon.classList.add('bi-eye-slash-fill');
+    } else {
+        input.type = 'password';
+        icon.classList.remove('bi-eye-slash-fill');
+        icon.classList.add('bi-eye-fill');
+    }
+}
+</script>
 {% endblock %}

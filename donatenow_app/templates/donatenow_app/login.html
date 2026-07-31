@@ -6,17 +6,19 @@
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-md-5">
-            <div class="glass-card p-4">
+            <div class="figma-card p-4 shadow-sm">
                 <div class="text-center mb-4">
-                    <i class="bi bi-shield-lock-fill text-primary fs-1"></i>
-                    <h3 class="fw-bold text-white mt-2">Iniciar Sesión</h3>
+                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3" style="width: 60px; height: 60px; background-color: var(--primary-teal-light); color: var(--primary-teal);">
+                        <i class="bi bi-shield-lock-fill fs-2"></i>
+                    </div>
+                    <h3 class="fw-bold text-dark">Iniciar Sesión</h3>
                     <p class="text-muted small">Ingresa tus credenciales para acceder a tu cuenta.</p>
                 </div>
 
                 <form method="post">
                     {% csrf_token %}
                     <div class="mb-3">
-                        <label class="form-label">{{ form.username_or_email.label }}</label>
+                        <label class="form-label text-dark fw-semibold small">{{ form.username_or_email.label }}</label>
                         {{ form.username_or_email }}
                         {% if form.username_or_email.errors %}
                             <div class="text-danger small mt-1">{{ form.username_or_email.errors.0 }}</div>
@@ -24,36 +26,57 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">{{ form.password.label }}</label>
-                        {{ form.password }}
+                        <label class="form-label text-dark fw-semibold small">{{ form.password.label }}</label>
+                        <div class="input-group">
+                            <input type="password" name="password" id="id_password" class="form-control" placeholder="••••••••" required>
+                            <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('id_password', this)">
+                                <i class="bi bi-eye-fill"></i>
+                            </button>
+                        </div>
                         {% if form.password.errors %}
                             <div class="text-danger small mt-1">{{ form.password.errors.0 }}</div>
                         {% endif %}
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">{{ form.codigo_2fa.label }}</label>
+                        <label class="form-label text-dark fw-semibold small">{{ form.codigo_2fa.label }}</label>
                         {{ form.codigo_2fa }}
-                        <div class="form-text text-muted">Requerido solo si tienes autenticación en 2 pasos activada.</div>
+                        <div class="form-text text-muted small">Requerido solo si tienes 2FA activado.</div>
                     </div>
 
                     <div class="mb-4 form-check">
                         {{ form.recordar_sesion }}
-                        <label class="form-check-label text-muted" for="{{ form.recordar_sesion.id_for_label }}">{{ form.recordar_sesion.label }}</label>
+                        <label class="form-check-label text-muted small" for="{{ form.recordar_sesion.id_for_label }}">{{ form.recordar_sesion.label }}</label>
                     </div>
 
                     <div class="d-grid mb-3">
-                        <button type="submit" class="btn btn-primary-custom btn-lg">
+                        <button type="submit" class="btn btn-teal btn-lg fw-bold">
                             <i class="bi bi-box-arrow-in-right me-2"></i>Entrar
                         </button>
                     </div>
 
                     <div class="text-center text-muted small">
-                        ¿No tienes una cuenta aún? <a href="{% url 'registro' %}" class="text-success text-decoration-none fw-semibold">Registrarse</a>
+                        ¿No tienes una cuenta aún? <a href="{% url 'registro' %}" class="fw-bold" style="color: var(--primary-teal);">Registrarse</a>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+function togglePassword(inputId, btn) {
+    const input = document.getElementById(inputId);
+    const icon = btn.querySelector('i');
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('bi-eye-fill');
+        icon.classList.add('bi-eye-slash-fill');
+    } else {
+        input.type = 'password';
+        icon.classList.remove('bi-eye-slash-fill');
+        icon.classList.add('bi-eye-fill');
+    }
+}
+</script>
 {% endblock %}
