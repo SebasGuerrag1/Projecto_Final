@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block title %}Realizar Donación - {{ campania.titulo }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+            <div class="glass-card p-4">
+                <div class="text-center mb-4">
+                    <i class="bi bi-heart-fill text-danger fs-1"></i>
+                    <h3 class="fw-bold text-white mt-2">Realizar una Donación</h3>
+                    <p class="text-muted small">Estás contribuyendo a: <strong class="text-info">{{ campania.titulo }}</strong></p>
+                </div>
+
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.campania_id }}
+
+                    <div class="mb-4">
+                        <label class="form-label fs-5 fw-semibold text-white">{{ form.monto.label }}</label>
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text bg-dark text-success border-secondary">$</span>
+                            {{ form.monto }}
+                        </div>
+                        {% if form.monto.errors %}
+                            <div class="text-danger small mt-1">{{ form.monto.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold text-white mb-2"><i class="bi bi-credit-card me-2"></i>Selecciona un Método de Pago</label>
+                        {% if metodos_pago %}
+                            <div class="list-group mb-3">
+                                {% for m in metodos_pago %}
+                                    <label class="list-group-item bg-dark text-white border-secondary d-flex justify-content-between align-items-center cursor-pointer">
+                                        <div>
+                                            <input class="form-check-input me-2" type="radio" name="metodo_pago_id" value="{{ m.id }}" {% if m.es_predeterminado or forloop.first %}checked{% endif %}>
+                                            <strong>{{ m.get_tipo_display }}</strong> (**** {{ m.ultimos_digitos }})
+                                        </div>
+                                        <span class="text-muted small">{{ m.titular }}</span>
+                                    </label>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="alert alert-warning small mb-3">
+                                <i class="bi bi-exclamation-triangle me-2"></i>No tienes métodos de pago registrados.
+                                <a href="{% url 'seleccionar_metodo_pago' %}" class="alert-link">Haz clic aquí para agregar una tarjeta</a> antes de realizar la donación.
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-4 form-check">
+                        {{ form.es_anonima }}
+                        <label class="form-check-label text-muted" for="{{ form.es_anonima.id_for_label }}">{{ form.es_anonima.label }}</label>
+                    </div>
+
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-accent btn-lg fw-bold shadow" {% if not metodos_pago %}disabled{% endif %}>
+                            <i class="bi bi-lock-fill me-2"></i>Confirmar y Procesar Donación
+                        </button>
+                    </div>
+
+                    <div class="text-center text-muted small mt-3">
+                        Al confirmar, se procesará el cobro de forma segura a través de la Pasarela de Pago (CU-06).
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

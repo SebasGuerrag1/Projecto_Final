@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %}Mis Métodos de Pago - DonateNow{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row g-4">
+        <!-- List Registered Methods -->
+        <div class="col-md-6">
+            <div class="glass-card p-4">
+                <h4 class="fw-bold text-white mb-3"><i class="bi bi-credit-card-2-front text-info me-2"></i>Tus Métodos de Pago</h4>
+                <div class="list-group list-group-flush bg-transparent">
+                    {% for m in metodos %}
+                        <div class="list-group-item bg-transparent text-white border-secondary p-3 mb-2 rounded border">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="fw-bold mb-1 text-white">{{ m.get_tipo_display }}</h6>
+                                    <div class="text-muted small">**** **** **** {{ m.ultimos_digitos }}</div>
+                                    <div class="text-muted small">Titular: {{ m.titular }}</div>
+                                </div>
+                                {% if m.es_predeterminado %}
+                                    <span class="badge bg-success">Predeterminado</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% empty %}
+                        <p class="text-muted small">No tienes tarjetas ni métodos de pago registrados aún.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Method Form -->
+        <div class="col-md-6">
+            <div class="glass-card p-4">
+                <h4 class="fw-bold text-white mb-3"><i class="bi bi-plus-circle text-success me-2"></i>Agregar Nuevo Método de Pago</h4>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">{{ form.tipo.label }}</label>
+                        {{ form.tipo }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">{{ form.titular.label }}</label>
+                        {{ form.titular }}
+                        {% if form.titular.errors %}<div class="text-danger small mt-1">{{ form.titular.errors.0 }}</div>{% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">{{ form.numero_tarjeta.label }}</label>
+                        {{ form.numero_tarjeta }}
+                        {% if form.numero_tarjeta.errors %}<div class="text-danger small mt-1">{{ form.numero_tarjeta.errors.0 }}</div>{% endif %}
+                        <div class="form-text text-muted">Tu tarjeta se tokenizará de forma segura sin guardar información sensible en texto plano.</div>
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        {{ form.es_predeterminado }}
+                        <label class="form-check-label text-muted" for="{{ form.es_predeterminado.id_for_label }}">{{ form.es_predeterminado.label }}</label>
+                    </div>
+
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-primary-custom">
+                            <i class="bi bi-shield-lock me-2"></i>Guardar y Tokenizar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ campania.titulo }} - DonateNow{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row g-4">
+        <!-- Campaign Detail Info -->
+        <div class="col-lg-8">
+            <div class="glass-card p-4 mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="badge bg-primary fs-6">{{ campania.categoria.nombre }}</span>
+                    <span class="urgency-badge urgency-{{ campania.urgencia }} fs-6">{{ campania.get_urgencia_display }}</span>
+                </div>
+
+                <h2 class="fw-bold text-white mb-3">{{ campania.titulo }}</h2>
+                <div class="text-muted small mb-4">
+                    <i class="bi bi-building me-1 text-info"></i>Organización: <strong>{{ campania.organizacion.nombre }}</strong>
+                    <span class="mx-2">•</span>
+                    <i class="bi bi-calendar3 me-1 text-warning"></i>Fin: {{ campania.objetivo.fecha_fin }}
+                </div>
+
+                <h5 class="text-white fw-semibold mb-2">Sobre esta causa:</h5>
+                <p class="text-light leading-relaxed mb-4">{{ campania.descripcion|linebreaks }}</p>
+
+                {% if campania.causa %}
+                    <div class="p-3 rounded bg-dark border border-secondary mb-4">
+                        <h6 class="text-info fw-semibold mb-1"><i class="bi bi-flag-fill me-2"></i>Causa Específica: {{ campania.causa.nombre }}</h6>
+                        <p class="text-muted small mb-0">{{ campania.causa.descripcion }}</p>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Recent Donations -->
+            <div class="glass-card p-4">
+                <h5 class="fw-bold text-white mb-3"><i class="bi bi-clock-history me-2 text-warning"></i>Donaciones Recientes</h5>
+                <div class="list-group list-group-flush bg-transparent">
+                    {% for d in donaciones_recientes %}
+                        <div class="list-group-item bg-transparent text-white border-secondary d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="bi bi-heart-fill text-danger me-2"></i>
+                                <strong>{% if d.es_anonima %}Donante Anónimo{% else %}{{ d.donante.usuario.get_full_name|default:d.donante.usuario.username }}{% endif %}</strong>
+                                <span class="text-muted small ms-2">{{ d.fecha|date:"d M Y, H:i" }}</span>
+                            </div>
+                            <span class="badge bg-success fs-6">+${{ d.monto }}</span>
+                        </div>
+                    {% empty %}
+                        <p class="text-muted small mb-0">Aún no hay donaciones para esta causa. ¡Sé el primero en donar!</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Donation Side Widget -->
+        <div class="col-lg-4">
+            <div class="glass-card p-4 sticky-top" style="top: 90px;">
+                <h4 class="fw-bold text-white mb-3"><i class="bi bi-graph-up-arrow text-success me-2"></i>Progreso de Recaudación</h4>
+                
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between align-items-baseline mb-1">
+                        <span class="fs-3 fw-bold text-success">${{ progreso.monto_recaudado }}</span>
+                        <span class="text-muted small">Meta: ${{ campania.objetivo.monto_objetivo }}</span>
+                    </div>
+                    <div class="progress progress-dark mb-2" style="height: 14px;">
+                        <div class="progress-bar progress-bar-glow" role="progressbar" style="width: {{ progreso.porcentaje_alcanzado }}%"></div>
+                    </div>
+                    <div class="d-flex justify-content-between text-muted small">
+                        <span>{{ progreso.porcentaje_alcanzado }}% alcanzado</span>
+                        <span>{{ progreso.cantidad_donaciones }} donaciones</span>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <a href="{% url 'realizar_donacion' campania.id %}" class="btn btn-accent btn-lg fw-bold shadow">
+                        <i class="bi bi-heart-fill me-2 text-danger"></i>Donar a esta Causa
+                    </a>
+                </div>
+
+                <hr class="border-secondary my-4">
+                <div class="small text-muted text-center">
+                    <i class="bi bi-shield-check text-success me-1"></i>Donaciones 100% seguras con tecnología PCI DSS.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

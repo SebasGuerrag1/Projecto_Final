@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+{% block title %}DonateNow - Transforma Vidas con tus Donaciones{% endblock %}
+
+{% block content %}
+<!-- Hero Banner -->
+<section class="hero-banner mb-5">
+    <div class="container">
+        <h1 class="hero-title text-white">Conecta con Causas que Cambian el Mundo</h1>
+        <p class="hero-subtitle">DonateNow es la plataforma integral para realizar donaciones en línea de forma rápida, transparente y 100% segura.</p>
+        <div class="d-flex justify-content-center gap-3">
+            <a href="{% url 'causas' %}" class="btn btn-primary-custom btn-lg">
+                <i class="bi bi-heart-fill me-2 text-danger"></i>Explorar Causas
+            </a>
+            {% if not user.is_authenticated %}
+                <a href="{% url 'registro' %}" class="btn btn-outline-light btn-lg">
+                    <i class="bi bi-person-badge me-2"></i>Registrarme como Donante
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Impact Counters -->
+<div class="container mb-5">
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="stat-box glass-card">
+                <i class="bi bi-cash-stack text-success fs-1 mb-2"></i>
+                <div class="stat-number">${{ total_recaudado|floatformat:2 }}</div>
+                <div class="text-muted fw-semibold">Total Recaudado</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-box glass-card">
+                <i class="bi bi-heart-pulse-fill text-danger fs-1 mb-2"></i>
+                <div class="stat-number">{{ total_donaciones }}</div>
+                <div class="text-muted fw-semibold">Donaciones Realizadas</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-box glass-card">
+                <i class="bi bi-building-check text-info fs-1 mb-2"></i>
+                <div class="stat-number">{{ total_organizaciones }}</div>
+                <div class="text-muted fw-semibold">Organizaciones Verificadas</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Featured Campaigns -->
+<div class="container mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold text-white mb-1"><i class="bi bi-lightning-charge-fill text-warning me-2"></i>Causas Urgentes y Destacadas</h2>
+            <p class="text-muted mb-0">Apoya directamente a las fundaciones más activas hoy.</p>
+        </div>
+        <a href="{% url 'causas' %}" class="btn btn-outline-light btn-sm">Ver todas <i class="bi bi-arrow-right ms-1"></i></a>
+    </div>
+
+    <div class="row g-4">
+        {% for c in campanias_destacadas %}
+            <div class="col-md-4">
+                <div class="glass-card campaign-card p-4 d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="badge bg-secondary">{{ c.categoria.nombre }}</span>
+                        <span class="urgency-badge urgency-{{ c.urgencia }}">{{ c.get_urgencia_display }}</span>
+                    </div>
+
+                    <h4 class="fw-bold text-white mb-2">{{ c.titulo }}</h4>
+                    <p class="text-muted flex-grow-1 small mb-4">{{ c.descripcion|truncatewords:20 }}</p>
+
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between small text-muted mb-1">
+                            <span>Recaudado: <strong>${{ c.progreso.monto_recaudado|default:0 }}</strong></span>
+                            <span>Meta: <strong>${{ c.objetivo.monto_objetivo|default:0 }}</strong></span>
+                        </div>
+                        <div class="progress progress-dark">
+                            <div class="progress-bar progress-bar-glow" role="progressbar" style="width: {{ c.progreso.porcentaje_alcanzado|default:0 }}%"></div>
+                        </div>
+                    </div>
+
+                    <div class="d-grid mt-2">
+                        <a href="{% url 'detalle_causa' c.id %}" class="btn btn-accent">
+                            <i class="bi bi-heart me-1"></i>Donar Ahora
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12 text-center py-5 glass-card">
+                <i class="bi bi-info-circle fs-1 text-muted d-block mb-3"></i>
+                <h4 class="text-white">No hay campañas registradas por el momento.</h4>
+                <p class="text-muted">Si eres Administrador, puedes crear una nueva campaña desde el panel.</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

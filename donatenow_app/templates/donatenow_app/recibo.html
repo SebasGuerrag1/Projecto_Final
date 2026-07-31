@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Recibo de Donación - {{ recibo.numero_recibo }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+            <div class="glass-card p-5 border-success">
+                <div class="text-center mb-4">
+                    <div class="badge bg-success fs-5 px-3 py-2 mb-2">
+                        <i class="bi bi-check-circle-fill me-2"></i>Donación Confirmada
+                    </div>
+                    <h3 class="fw-bold text-white">Recibo Electrónico de Donación</h3>
+                    <p class="text-muted">Comprobante No. <strong class="text-info">{{ recibo.numero_recibo }}</strong></p>
+                </div>
+
+                <div class="bg-dark p-4 rounded border border-secondary mb-4">
+                    <div class="row mb-2">
+                        <div class="col-6 text-muted">Monto Donado:</div>
+                        <div class="col-6 text-end text-success fw-bold fs-4">${{ recibo.donacion.monto }} USD</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-6 text-muted">Causa / Campaña:</div>
+                        <div class="col-6 text-end text-white fw-semibold">{{ recibo.donacion.campania.titulo }}</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-6 text-muted">Organización:</div>
+                        <div class="col-6 text-end text-white">{{ recibo.donacion.campania.organizacion.nombre }}</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-6 text-muted">Donante:</div>
+                        <div class="col-6 text-end text-white">
+                            {% if recibo.donacion.es_anonima %}
+                                Donante Anónimo
+                            {% else %}
+                                {{ recibo.donacion.donante.usuario.get_full_name|default:recibo.donacion.donante.usuario.username }}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-6 text-muted">Fecha de Emisión:</div>
+                        <div class="col-6 text-end text-white">{{ recibo.fecha_emision|date:"d M Y, H:i:s" }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 text-muted">Código de Transacción:</div>
+                        <div class="col-6 text-end text-warning font-monospace small">{{ recibo.donacion.transaccion.codigo_transaccion }}</div>
+                    </div>
+                </div>
+
+                <div class="p-3 bg-dark rounded border border-secondary mb-4 text-center">
+                    <div class="text-muted small mb-1">Hash de Verificación Digital (SHA-256):</div>
+                    <code class="text-info small text-break">{{ recibo.hash_verificacion }}</code>
+                </div>
+
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="{% url 'causas' %}" class="btn btn-outline-light">
+                        <i class="bi bi-arrow-left me-1"></i>Seguir Explorando
+                    </a>
+                    <button onclick="window.print()" class="btn btn-accent">
+                        <i class="bi bi-printer me-1"></i>Imprimir / Guardar PDF
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

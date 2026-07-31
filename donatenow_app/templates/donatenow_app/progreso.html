@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}Monitorear Progreso - Admin DonateNow{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold text-white mb-1"><i class="bi bi-graph-up-arrow text-success me-2"></i>Monitoreo de Progreso de Recaudación</h2>
+            <p class="text-muted mb-0">Seguimiento en tiempo real de las metas de donación por campaña.</p>
+        </div>
+        <a href="{% url 'crear_campania' %}" class="btn btn-primary-custom">
+            <i class="bi bi-plus-lg me-1"></i>Nueva Campaña
+        </a>
+    </div>
+
+    <div class="glass-card p-4">
+        <div class="table-responsive">
+            <table class="table table-dark table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Campaña</th>
+                        <th>Organización</th>
+                        <th>Estado / Urgencia</th>
+                        <th>Progreso Recaudado</th>
+                        <th>Donaciones</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in campanias %}
+                        <tr>
+                            <td>
+                                <strong class="text-white d-block">{{ c.titulo }}</strong>
+                                <small class="text-muted">{{ c.categoria.nombre }}</small>
+                            </td>
+                            <td>{{ c.organizacion.nombre }}</td>
+                            <td>
+                                <span class="badge bg-{% if c.estado == 'ACTIVA' %}success{% elif c.estado == 'PAUSADA' %}warning{% else %}secondary{% endif %} me-1">
+                                    {{ c.get_estado_display }}
+                                </span>
+                                <span class="urgency-badge urgency-{{ c.urgencia }}">{{ c.get_urgencia_display }}</span>
+                            </td>
+                            <td style="min-width: 200px;">
+                                <div class="d-flex justify-content-between small mb-1">
+                                    <span>${{ c.progreso.monto_recaudado }}</span>
+                                    <span class="text-muted">Meta: ${{ c.objetivo.monto_objetivo }}</span>
+                                </div>
+                                <div class="progress progress-dark" style="height: 8px;">
+                                    <div class="progress-bar progress-bar-glow" role="progressbar" style="width: {{ c.progreso.porcentaje_alcanzado }}%"></div>
+                                </div>
+                                <div class="small text-end text-success fw-bold mt-1">{{ c.progreso.porcentaje_alcanzado }}%</div>
+                            </td>
+                            <td class="text-center fw-bold text-info">{{ c.progreso.cantidad_donaciones }}</td>
+                            <td>
+                                <a href="{% url 'editar_campania' c.id %}" class="btn btn-sm btn-outline-warning">
+                                    <i class="bi bi-pencil me-1"></i>Editar
+                                </a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-4">No hay campañas registradas aún.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

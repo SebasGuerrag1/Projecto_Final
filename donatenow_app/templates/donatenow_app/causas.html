@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block title %}Explorar Causas Benéficas - DonateNow{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold text-white mb-1"><i class="bi bi-compass-fill text-primary me-2"></i>Explorar Causas Benéficas</h2>
+            <p class="text-muted mb-0">Encuentra una causa que te apasione y contribuye a su recaudación.</p>
+        </div>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="glass-card p-3 mb-4">
+        <form method="get" class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label small text-muted">Categoría</label>
+                {{ form.categoria }}
+            </div>
+            <div class="col-md-3">
+                <label class="form-label small text-muted">Nivel de Urgencia</label>
+                {{ form.urgencia }}
+            </div>
+            <div class="col-md-3">
+                <label class="form-label small text-muted">Búsqueda por texto</label>
+                {{ form.q }}
+            </div>
+            <div class="col-md-2 d-grid">
+                <button type="submit" class="btn btn-primary-custom">
+                    <i class="bi bi-funnel-fill me-1"></i>Filtrar
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Campaign Grid -->
+    <div class="row g-4">
+        {% for c in campanias %}
+            <div class="col-md-4">
+                <div class="glass-card campaign-card p-4 d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="badge bg-secondary">{{ c.categoria.nombre }}</span>
+                        <span class="urgency-badge urgency-{{ c.urgencia }}">{{ c.get_urgencia_display }}</span>
+                    </div>
+
+                    <h4 class="fw-bold text-white mb-2">{{ c.titulo }}</h4>
+                    <p class="text-muted flex-grow-1 small mb-3">{{ c.descripcion|truncatewords:25 }}</p>
+
+                    <div class="small text-info mb-3">
+                        <i class="bi bi-building me-1"></i>Organización: <strong>{{ c.organizacion.nombre }}</strong>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between small text-muted mb-1">
+                            <span>Recaudado: <strong>${{ c.progreso.monto_recaudado|default:0 }}</strong></span>
+                            <span>Meta: <strong>${{ c.objetivo.monto_objetivo|default:0 }}</strong></span>
+                        </div>
+                        <div class="progress progress-dark">
+                            <div class="progress-bar progress-bar-glow" role="progressbar" style="width: {{ c.progreso.porcentaje_alcanzado|default:0 }}%"></div>
+                        </div>
+                    </div>
+
+                    <div class="d-grid mt-2">
+                        <a href="{% url 'detalle_causa' c.id %}" class="btn btn-accent">
+                            <i class="bi bi-eye me-1"></i>Ver Detalle y Donar
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12 text-center py-5 glass-card">
+                <i class="bi bi-search fs-1 text-muted d-block mb-3"></i>
+                <h4 class="text-white">No se encontraron causas con los filtros aplicados.</h4>
+                <p class="text-muted">Intenta borrar los filtros para ver todas las causas disponibles.</p>
+                <a href="{% url 'causas' %}" class="btn btn-outline-light btn-sm mt-2">Restablecer Filtros</a>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

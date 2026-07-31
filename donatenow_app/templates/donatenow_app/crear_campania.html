@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block title %}Crear Nueva Campaña - Admin DonateNow{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="glass-card p-4">
+                <div class="d-flex align-items-center mb-4">
+                    <i class="bi bi-plus-square-fill text-warning fs-1 me-3"></i>
+                    <div>
+                        <h3 class="fw-bold text-white mb-0">Crear Nueva Campaña</h3>
+                        <p class="text-muted small mb-0">Define los detalles, causa y objetivo financiero de la nueva campaña.</p>
+                    </div>
+                </div>
+
+                <form method="post">
+                    {% csrf_token %}
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger small mb-3">{{ form.non_field_errors.0 }}</div>
+                    {% endif %}
+
+                    <div class="mb-3">
+                        <label class="form-label">{{ form.titulo.label }}</label>
+                        {{ form.titulo }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">{{ form.descripcion.label }}</label>
+                        {{ form.descripcion }}
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">{{ form.organizacion.label }}</label>
+                            {{ form.organizacion }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">{{ form.categoria.label }}</label>
+                            {{ form.categoria }}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">{{ form.causa.label }}</label>
+                        {{ form.causa }}
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label">{{ form.monto_objetivo.label }}</label>
+                            {{ form.monto_objetivo }}
+                            {% if form.monto_objetivo.errors %}<div class="text-danger small mt-1">{{ form.monto_objetivo.errors.0 }}</div>{% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">{{ form.fecha_inicio.label }}</label>
+                            {{ form.fecha_inicio }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">{{ form.fecha_fin.label }}</label>
+                            {{ form.fecha_fin }}
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label">{{ form.urgencia.label }}</label>
+                            {{ form.urgencia }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">{{ form.estado.label }}</label>
+                            {{ form.estado }}
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-3 mt-4">
+                        <a href="{% url 'monitorear_progreso' %}" class="btn btn-outline-light">Cancelar</a>
+                        <button type="submit" class="btn btn-primary-custom">
+                            <i class="bi bi-check-circle me-1"></i>Crear y Publicar Campaña
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

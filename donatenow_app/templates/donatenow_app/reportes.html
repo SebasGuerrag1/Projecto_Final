@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block title %}Generar Reportes - Admin DonateNow{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold text-white mb-1"><i class="bi bi-file-earmark-bar-graph-fill text-danger me-2"></i>Generador de Reportes Formales</h2>
+            <p class="text-muted mb-0">Consolida métricas para rendición de cuentas y auditorías en documentos exportables.</p>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Generate Report Form -->
+        <div class="col-md-5">
+            <div class="glass-card p-4">
+                <h4 class="fw-bold text-white mb-3"><i class="bi bi-plus-circle me-2 text-success"></i>Nuevo Reporte</h4>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">{{ form.titulo.label }}</label>
+                        {{ form.titulo }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">{{ form.tipo_reporte.label }}</label>
+                        {{ form.tipo_reporte }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">{{ form.parametros.label }}</label>
+                        {{ form.parametros }}
+                    </div>
+
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-primary-custom">
+                            <i class="bi bi-file-earmark-arrow-down me-1"></i>Generar y Exportar Reporte
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Generated Reports History -->
+        <div class="col-md-7">
+            <div class="glass-card p-4">
+                <h4 class="fw-bold text-white mb-3">Historial de Reportes Generados</h4>
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Título</th>
+                                <th>Tipo</th>
+                                <th>Fecha Generación</th>
+                                <th>Generado Por</th>
+                                <th>Archivo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for r in reportes %}
+                                <tr>
+                                    <td>
+                                        <strong class="text-white d-block">{{ r.titulo }}</strong>
+                                        {% if r.parametros %}<small class="text-muted">{{ r.parametros }}</small>{% endif %}
+                                    </td>
+                                    <td><span class="badge bg-info text-dark">{{ r.get_tipo_reporte_display }}</span></td>
+                                    <td class="small text-muted">{{ r.fecha_generacion|date:"d M Y, H:i" }}</td>
+                                    <td class="small">{{ r.generado_por.username|default:"Sistema" }}</td>
+                                    <td>
+                                        <a href="#" class="btn btn-sm btn-outline-light" onclick="alert('Descargando archivo: {{ r.archivo_url }}'); return false;">
+                                            <i class="bi bi-download me-1"></i>PDF
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted py-4">No se han generado reportes aún.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
