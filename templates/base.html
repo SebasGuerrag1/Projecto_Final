@@ -4,53 +4,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}DonateNow - Sistema de Donaciones en Línea{% endblock %}</title>
+    <title>{% block title %}DonateNow - Plataforma de Donaciones{% endblock %}</title>
     
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <!-- Custom CSS -->
+    <!-- Custom CSS (Figma Teal Design) -->
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     {% block extra_css %}{% endblock %}
 </head>
 <body>
 
-    <!-- Global Navigation Header -->
-    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top">
+    <!-- Header Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
         <div class="container">
             <a class="navbar-brand brand-logo" href="{% url 'index' %}">
-                <i class="bi bi-heart-pulse-fill text-danger me-2"></i>DonateNow
+                <i class="bi bi-heart-pulse-fill"></i>DonateNow
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarMain">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-4">
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'index' %}"><i class="bi bi-house-door me-1"></i>Inicio</a>
+                        <a class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}" href="{% url 'index' %}">
+                            <i class="bi bi-house-door me-1"></i>Home
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'causas' %}"><i class="bi bi-grid-fill me-1"></i>Explorar Causas</a>
+                        <a class="nav-link {% if request.resolver_match.url_name == 'causas' %}active{% endif %}" href="{% url 'causas' %}">
+                            <i class="bi bi-grid me-1"></i>Causas
+                        </a>
                     </li>
                     {% if user.is_authenticated and user.es_donante %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'seleccionar_metodo_pago' %}"><i class="bi bi-credit-card me-1"></i>Mis Métodos de Pago</a>
+                        <a class="nav-link" href="{% url 'seleccionar_metodo_pago' %}">
+                            <i class="bi bi-credit-card me-1"></i>Métodos de Pago
+                        </a>
                     </li>
                     {% endif %}
 
                     {% if user.is_authenticated and user.es_admin %}
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle text-warning" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown">
-                            <i class="bi bi-speedometer2 me-1"></i>Panel Admin
+                        <a class="nav-link dropdown-toggle text-success fw-bold" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-speedometer2 me-1"></i>Admin Panel
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-dark">
-                            <li><a class="dropdown-item" href="{% url 'monitorear_progreso' %}"><i class="bi bi-graph-up me-2"></i>Progreso Campañas</a></li>
-                            <li><a class="dropdown-item" href="{% url 'crear_campania' %}"><i class="bi bi-plus-circle me-2"></i>Nueva Campaña</a></li>
-                            <li><a class="dropdown-item" href="{% url 'gestionar_organizaciones' %}"><i class="bi bi-building me-2"></i>Organizaciones</a></li>
-                            <li><a class="dropdown-item" href="{% url 'visualizar_estadisticas' %}"><i class="bi bi-pie-chart me-2"></i>Estadísticas</a></li>
+                        <ul class="dropdown-menu border-0 shadow-lg">
+                            <li><a class="dropdown-item" href="{% url 'monitorear_progreso' %}"><i class="bi bi-graph-up me-2 text-success"></i>Progreso Campañas</a></li>
+                            <li><a class="dropdown-item" href="{% url 'crear_campania' %}"><i class="bi bi-plus-circle me-2 text-primary"></i>Nueva Campaña</a></li>
+                            <li><a class="dropdown-item" href="{% url 'gestionar_organizaciones' %}"><i class="bi bi-building me-2 text-info"></i>Organizaciones</a></li>
+                            <li><a class="dropdown-item" href="{% url 'visualizar_estadisticas' %}"><i class="bi bi-pie-chart me-2 text-warning"></i>Estadísticas</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="{% url 'generar_reportes' %}"><i class="bi bi-file-earmark-bar-graph me-2"></i>Generar Reportes</a></li>
+                            <li><a class="dropdown-item" href="{% url 'generar_reportes' %}"><i class="bi bi-file-earmark-bar-graph me-2 text-danger"></i>Generar Reportes</a></li>
                         </ul>
                     </li>
                     {% endif %}
@@ -59,20 +65,20 @@
                 <!-- User Session Actions -->
                 <div class="d-flex align-items-center gap-2">
                     {% if user.is_authenticated %}
-                        <span class="text-light me-2">
-                            <i class="bi bi-person-circle me-1 text-info"></i>
+                        <span class="text-dark me-2 small">
+                            <i class="bi bi-person-circle text-success me-1"></i>
                             <strong>{{ user.username }}</strong>
-                            {% if user.es_admin %}<span class="badge bg-warning text-dark ms-1">Admin</span>{% endif %}
+                            {% if user.es_admin %}<span class="badge bg-success ms-1">Admin</span>{% endif %}
                         </span>
-                        <a href="{% url 'logout' %}" class="btn btn-outline-danger btn-sm">
-                            <i class="bi bi-box-arrow-right me-1"></i>Salir
+                        <a href="{% url 'logout' %}" class="btn btn-outline-danger btn-sm rounded-pill px-3">
+                            Salir
                         </a>
                     {% else %}
-                        <a href="{% url 'login' %}" class="btn btn-outline-light btn-sm">
-                            <i class="bi bi-box-arrow-in-right me-1"></i>Iniciar Sesión
+                        <a href="{% url 'login' %}" class="btn btn-teal-outline btn-sm px-3">
+                            Iniciar Sesión
                         </a>
-                        <a href="{% url 'registro' %}" class="btn btn-accent btn-sm">
-                            <i class="bi bi-person-plus me-1"></i>Registrarse
+                        <a href="{% url 'registro' %}" class="btn btn-teal btn-sm px-3">
+                            Registrarse
                         </a>
                     {% endif %}
                 </div>
@@ -80,11 +86,11 @@
         </div>
     </nav>
 
-    <!-- Notification Messages -->
+    <!-- Notification Banners -->
     <div class="container mt-3">
         {% if messages %}
             {% for message in messages %}
-                <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show shadow-sm" role="alert">
+                <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show border-0 shadow-sm rounded-3" role="alert">
                     <i class="bi bi-info-circle-fill me-2"></i>{{ message }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
@@ -92,7 +98,7 @@
         {% endif %}
     </div>
 
-    <!-- Main Body Content -->
+    <!-- Main Content -->
     <main class="py-4">
         {% block content %}{% endblock %}
     </main>
@@ -101,11 +107,12 @@
     <footer>
         <div class="container text-center">
             <div class="row align-items-center">
-                <div class="col-md-6 text-md-start mb-3 mb-md-0">
-                    <span class="brand-logo fs-5">DonateNow</span> - Plataforma de Donaciones Transparente y Segura.
+                <div class="col-md-6 text-md-start mb-2 mb-md-0">
+                    <span class="brand-logo fs-5 d-inline-flex me-2">DonateNow</span>
+                    <span class="small text-muted">| Plataforma de recaudación y ayuda comunitaria.</span>
                 </div>
-                <div class="col-md-6 text-md-end">
-                    <small>&copy; 2026 DonateNow. Todos los derechos reservados. PCI DSS Level 1 Compliant.</small>
+                <div class="col-md-6 text-md-end small text-muted">
+                    &copy; 2026 DonateNow. Transacciones procesadas con PCI DSS.
                 </div>
             </div>
         </div>

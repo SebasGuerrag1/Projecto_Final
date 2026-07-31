@@ -1,72 +1,100 @@
 {% extends 'base.html' %}
 
-{% block title %}Realizar Donación - {{ campania.titulo }}{% endblock %}
+{% block title %}Donación - {{ campania.titulo }}{% endblock %}
 
 {% block content %}
 <div class="container py-4">
     <div class="row justify-content-center">
-        <div class="col-md-7">
-            <div class="glass-card p-4">
-                <div class="text-center mb-4">
-                    <i class="bi bi-heart-fill text-danger fs-1"></i>
-                    <h3 class="fw-bold text-white mt-2">Realizar una Donación</h3>
-                    <p class="text-muted small">Estás contribuyendo a: <strong class="text-info">{{ campania.titulo }}</strong></p>
+        <div class="col-md-6">
+            <div class="figma-card p-4 shadow-sm">
+                <!-- Header Campaign Banner -->
+                <div class="p-3 rounded-3 bg-light border mb-4 d-flex align-items-center gap-3">
+                    <div class="rounded-3 overflow-hidden" style="width: 70px; height: 70px; flex-shrink: 0;">
+                        <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=200&q=80" class="w-100 h-100 object-fit-cover">
+                    </div>
+                    <div>
+                        <div class="text-muted small fw-bold text-uppercase">{{ campania.organizacion.nombre }}</div>
+                        <h6 class="fw-bold text-dark mb-0">{{ campania.titulo }}</h6>
+                    </div>
                 </div>
 
-                <form method="post">
+                <form method="post" id="donationForm">
                     {% csrf_token %}
                     {{ form.campania_id }}
 
+                    <h6 class="fw-bold text-dark mb-3">Selecciona un monto</h6>
+
+                    <!-- Pre-set Amount Chips (Figma Stepper) -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-6">
+                            <div class="amount-chip" onclick="setMonto('5000', this)">$5.000</div>
+                        </div>
+                        <div class="col-6">
+                            <div class="amount-chip active" onclick="setMonto('10000', this)">$10.000</div>
+                        </div>
+                        <div class="col-6">
+                            <div class="amount-chip" onclick="setMonto('25000', this)">$25.000</div>
+                        </div>
+                        <div class="col-6">
+                            <div class="amount-chip" onclick="setMonto('50000', this)">$50.000</div>
+                        </div>
+                    </div>
+
+                    <!-- Custom Amount Input -->
                     <div class="mb-4">
-                        <label class="form-label fs-5 fw-semibold text-white">{{ form.monto.label }}</label>
+                        <label class="form-label text-muted small fw-semibold">Otro monto</label>
                         <div class="input-group input-group-lg">
-                            <span class="input-group-text bg-dark text-success border-secondary">$</span>
-                            {{ form.monto }}
+                            <span class="input-group-text bg-light text-muted fw-bold">$</span>
+                            <input type="number" step="0.01" min="1" name="monto" id="id_monto" class="form-control fw-bold" value="10000" required>
                         </div>
                         {% if form.monto.errors %}
                             <div class="text-danger small mt-1">{{ form.monto.errors.0 }}</div>
                         {% endif %}
                     </div>
 
+                    <!-- Payment Method Selection -->
                     <div class="mb-4">
-                        <label class="form-label fw-semibold text-white mb-2"><i class="bi bi-credit-card me-2"></i>Selecciona un Método de Pago</label>
+                        <label class="form-label text-muted small fw-semibold">Método de Pago Registrado</label>
                         {% if metodos_pago %}
-                            <div class="list-group mb-3">
+                            <div class="list-group">
                                 {% for m in metodos_pago %}
-                                    <label class="list-group-item bg-dark text-white border-secondary d-flex justify-content-between align-items-center cursor-pointer">
+                                    <label class="list-group-item d-flex justify-content-between align-items-center cursor-pointer py-3">
                                         <div>
                                             <input class="form-check-input me-2" type="radio" name="metodo_pago_id" value="{{ m.id }}" {% if m.es_predeterminado or forloop.first %}checked{% endif %}>
-                                            <strong>{{ m.get_tipo_display }}</strong> (**** {{ m.ultimos_digitos }})
+                                            <strong class="text-dark">{{ m.get_tipo_display }}</strong> (**** {{ m.ultimos_digitos }})
                                         </div>
                                         <span class="text-muted small">{{ m.titular }}</span>
                                     </label>
                                 {% endfor %}
                             </div>
                         {% else %}
-                            <div class="alert alert-warning small mb-3">
-                                <i class="bi bi-exclamation-triangle me-2"></i>No tienes métodos de pago registrados.
-                                <a href="{% url 'seleccionar_metodo_pago' %}" class="alert-link">Haz clic aquí para agregar una tarjeta</a> antes de realizar la donación.
+                            <div class="alert alert-warning small">
+                                No tienes tarjetas guardadas. <a href="{% url 'seleccionar_metodo_pago' %}" class="fw-bold">Agrega un método de pago aquí</a>.
                             </div>
                         {% endif %}
                     </div>
 
                     <div class="mb-4 form-check">
                         {{ form.es_anonima }}
-                        <label class="form-check-label text-muted" for="{{ form.es_anonima.id_for_label }}">{{ form.es_anonima.label }}</label>
+                        <label class="form-check-label text-muted small" for="{{ form.es_anonima.id_for_label }}">Donación mensual recurrente / anónima</label>
                     </div>
 
-                    <div class="d-grid mt-4">
-                        <button type="submit" class="btn btn-accent btn-lg fw-bold shadow" {% if not metodos_pago %}disabled{% endif %}>
-                            <i class="bi bi-lock-fill me-2"></i>Confirmar y Procesar Donación
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-teal btn-lg fw-bold py-3" {% if not metodos_pago %}disabled{% endif %}>
+                            Continuar <i class="bi bi-chevron-right ms-1"></i>
                         </button>
-                    </div>
-
-                    <div class="text-center text-muted small mt-3">
-                        Al confirmar, se procesará el cobro de forma segura a través de la Pasarela de Pago (CU-06).
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+function setMonto(val, el) {
+    document.getElementById('id_monto').value = val;
+    document.querySelectorAll('.amount-chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+}
+</script>
 {% endblock %}

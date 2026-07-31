@@ -1,65 +1,48 @@
 {% extends 'base.html' %}
 
-{% block title %}Recibo de Donación - {{ recibo.numero_recibo }}{% endblock %}
+{% block title %}¡Gracias por tu donación! - DonateNow{% endblock %}
 
 {% block content %}
-<div class="container py-4">
+<div class="container py-5">
     <div class="row justify-content-center">
-        <div class="col-md-7">
-            <div class="glass-card p-5 border-success">
-                <div class="text-center mb-4">
-                    <div class="badge bg-success fs-5 px-3 py-2 mb-2">
-                        <i class="bi bi-check-circle-fill me-2"></i>Donación Confirmada
-                    </div>
-                    <h3 class="fw-bold text-white">Recibo Electrónico de Donación</h3>
-                    <p class="text-muted">Comprobante No. <strong class="text-info">{{ recibo.numero_recibo }}</strong></p>
+        <div class="col-md-6">
+            <div class="figma-card p-5 text-center shadow-sm">
+                <!-- Large Green Check Icon (Figma Mockup) -->
+                <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-4" style="width: 80px; height: 80px; background-color: var(--primary-teal); color: #ffffff;">
+                    <i class="bi bi-check-lg fs-1"></i>
                 </div>
 
-                <div class="bg-dark p-4 rounded border border-secondary mb-4">
-                    <div class="row mb-2">
-                        <div class="col-6 text-muted">Monto Donado:</div>
-                        <div class="col-6 text-end text-success fw-bold fs-4">${{ recibo.donacion.monto }} USD</div>
+                <h2 class="fw-extrabold text-dark mb-2">¡Gracias por tu donación!</h2>
+                <p class="text-muted mb-4">Tu apoyo hace la diferencia para esta comunidad</p>
+
+                <!-- Transaction Summary Card -->
+                <div class="p-4 rounded-3 text-start mb-4" style="background-color: #f8fafc; border: 1px solid var(--border-light);">
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-muted">Campaña</span>
+                        <strong class="text-dark text-end ms-3">{{ recibo.donacion.campania.titulo }}</strong>
                     </div>
-                    <div class="row mb-2">
-                        <div class="col-6 text-muted">Causa / Campaña:</div>
-                        <div class="col-6 text-end text-white fw-semibold">{{ recibo.donacion.campania.titulo }}</div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-muted">Monto</span>
+                        <strong class="fs-5 text-dark">${{ recibo.donacion.monto|floatformat:0 }}</strong>
                     </div>
-                    <div class="row mb-2">
-                        <div class="col-6 text-muted">Organización:</div>
-                        <div class="col-6 text-end text-white">{{ recibo.donacion.campania.organizacion.nombre }}</div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-muted">Fecha</span>
+                        <span class="text-dark fw-medium">{{ recibo.fecha_emision|date:"d M Y" }}</span>
                     </div>
-                    <div class="row mb-2">
-                        <div class="col-6 text-muted">Donante:</div>
-                        <div class="col-6 text-end text-white">
-                            {% if recibo.donacion.es_anonima %}
-                                Donante Anónimo
-                            {% else %}
-                                {{ recibo.donacion.donante.usuario.get_full_name|default:recibo.donacion.donante.usuario.username }}
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-6 text-muted">Fecha de Emisión:</div>
-                        <div class="col-6 text-end text-white">{{ recibo.fecha_emision|date:"d M Y, H:i:s" }}</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-6 text-muted">Código de Transacción:</div>
-                        <div class="col-6 text-end text-warning font-monospace small">{{ recibo.donacion.transaccion.codigo_transaccion }}</div>
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted">N° transacción</span>
+                        <code class="text-dark fw-bold">{{ recibo.donacion.transaccion.codigo_transaccion }}</code>
                     </div>
                 </div>
 
-                <div class="p-3 bg-dark rounded border border-secondary mb-4 text-center">
-                    <div class="text-muted small mb-1">Hash de Verificación Digital (SHA-256):</div>
-                    <code class="text-info small text-break">{{ recibo.hash_verificacion }}</code>
+                <div class="text-muted small mb-4">
+                    <i class="bi bi-envelope-check text-success me-1"></i>Recibiste un recibo en tu correo electrónico registrado
                 </div>
 
-                <div class="d-flex justify-content-center gap-3">
-                    <a href="{% url 'causas' %}" class="btn btn-outline-light">
-                        <i class="bi bi-arrow-left me-1"></i>Seguir Explorando
+                <div class="d-grid gap-2">
+                    <a href="{% url 'causas' %}" class="btn btn-teal btn-lg fw-bold py-3">
+                        Ver más campañas
                     </a>
-                    <button onclick="window.print()" class="btn btn-accent">
-                        <i class="bi bi-printer me-1"></i>Imprimir / Guardar PDF
-                    </button>
                 </div>
             </div>
         </div>
